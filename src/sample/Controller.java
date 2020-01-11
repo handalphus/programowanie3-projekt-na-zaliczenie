@@ -10,7 +10,7 @@ import engine.Bot;
 import engine.Gameplay;
 public class Controller {
 
-
+    public Bot gra ;
     @FXML
     Label tabliczka;
     @FXML
@@ -38,7 +38,7 @@ public class Controller {
 
         System.out.println("kliknął");
     }
-    public Bot gra ;
+
     private void klikniecie1(Button naz){
         String id = naz.getId();
         //małe 3x3
