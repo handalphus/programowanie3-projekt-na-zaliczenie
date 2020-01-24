@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import engine.Bot;
 import engine.Gameplay;
@@ -16,6 +17,7 @@ import java.util.*;
 public class Controller {
     ArrayList<ObservableList<Node>> przyciski = new ArrayList<>();
     ObservableList<Node> dzieci;
+    boolean czyGrać = true;
     public Bot gra ;
     @FXML
     Label tabliczka;
@@ -23,6 +25,9 @@ public class Controller {
     GridPane duzyGrid;
     @FXML
     public void initialize(){
+
+        tabliczka.setText("Kółko i krzyżyk");
+        tabliczka.setStyle("-fx-text-fill: #ffebe3");
         gra = new Bot();
         duzyGrid.setStyle("-fx-border-color: black");
         dzieci = duzyGrid.getChildren();
@@ -38,7 +43,7 @@ public class Controller {
                 przyc.setId("b"+i+j);
                 przyc.setOnAction(e ->klikniecie1(przyc));
                 przyc.setText("");
-                przyc.setStyle("-fx-background-color: transparent;-fx-border-color: black");
+                przyc.setStyle("-fx-background-color: transparent;-fx-border-color: black;-fx-text-fill: #ffebe3");
 
             }
             przyciski.add(buttony);
@@ -61,7 +66,7 @@ public class Controller {
     private void klikniecie1(Button naz){
         int malyKwadrat=9;
         int pole=9;
-        boolean czyGrać = true;
+
        String id = naz.getId();
         //małe 3x3
 
@@ -69,13 +74,13 @@ public class Controller {
         pole=Integer.parseInt(id.split("")[2]);
 // &&(malyKwadrat==gra.getLastlyPlayedField()||gra.getLastlyPlayedField()==9)
 
-        if(gra.getLastlyPlayedField()==9||malyKwadrat==gra.getLastlyPlayedField()||gra.getWhoIsSquareWonBy().get(gra.getLastlyPlayedField())!= Gameplay.symbolsOfPlayers.empty)
+        if(czyGrać&&(gra.getLastlyPlayedField()==9||malyKwadrat==gra.getLastlyPlayedField()||gra.getWhoIsSquareWonBy().get(gra.getLastlyPlayedField())!= Gameplay.symbolsOfPlayers.empty))
         {if(!gra.sprawdzWygrana(malyKwadrat)&&!gra.sprawdzPelnosc(malyKwadrat)
                 &&gra.tableOfGame.get(malyKwadrat).get(pole)== Gameplay.symbolsOfPlayers.empty)
         {gra.makeMove(malyKwadrat,pole);
         naz.setText("X");
         if (gra.sprawdzWygrana(malyKwadrat)){
-            dzieci.get(malyKwadrat).setStyle("-fx-background-color: blue;-fx-border-color: black");
+            dzieci.get(malyKwadrat).setStyle("-fx-background-color: #4d6b00;-fx-border-color: black");
             dzieci.get(malyKwadrat).setId("wygrana");
 
         }
@@ -88,16 +93,17 @@ public class Controller {
             if(gra.checkIfTableIsWon()== Gameplay.symbolsOfPlayers.cross){
                 tabliczka.setText("Wygrał krzyżyk");
                 czyGrać=false;
+                return;
             }
        int[] ruchBota= gra.botMove();
        Button dlaBota=new Button();
        dlaBota=(Button) przyciski.get(ruchBota[0]).get(ruchBota[1]);
        dlaBota.setText("O");
        if(!gra.sprawdzWygrana(ruchBota[1]))
-        {dzieci.get(ruchBota[1]).setStyle("-fx-background-color: magenta;-fx-border-color: black");
+        {dzieci.get(ruchBota[1]).setStyle("-fx-background-color: #7491a1;-fx-border-color: black");
         dzieci.get(ruchBota[1]).setId("ostatni ruch bota");}
         if (gra.sprawdzWygrana(ruchBota[0])){
-            dzieci.get(ruchBota[0]).setStyle("-fx-background-color: red;-fx-border-color: black");
+            dzieci.get(ruchBota[0]).setStyle("-fx-background-color: #e52515;-fx-border-color: black");
         dzieci.get(ruchBota[0]).setId("wygrane");
         }
             if(gra.checkIfTableIsWon()== Gameplay.symbolsOfPlayers.circle){
@@ -107,12 +113,15 @@ public class Controller {
         }
 
         }
-        if(!czyGrać){
 
-        }
     }
 
 
+    public void zacznijGre(MouseEvent mouseEvent) {
+
+        initialize();
+        czyGrać=true;
+    }
 }
 
 
