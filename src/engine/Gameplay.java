@@ -20,7 +20,7 @@ public class Gameplay {
     //    first coordinate is number of square
     //    second coordinate is number of field
 
-    protected ArrayList<ArrayList<symbolsOfPlayers>> tableOfGame;
+    public ArrayList<ArrayList<symbolsOfPlayers>> tableOfGame;
 
     // each of 9 squares 3x3 is meant to be square
 
@@ -175,8 +175,15 @@ public class Gameplay {
     }
 
     public boolean checkNumberOfSquare(int numberOfSquare) {
-        if (!isSquareFull.get(numberOfSquare) && whoIsSquareWonBy.get(numberOfSquare) == symbolsOfPlayers.empty) {
-            return true;
+        if (!isSquareFull.get(numberOfSquare) && whoIsSquareWonBy.get(numberOfSquare) == symbolsOfPlayers.empty ) {
+            if(getLastlyPlayedField()==9) {
+                return true;}
+            else if (getLastlyPlayedField()==numberOfSquare){
+                return true;
+            }
+            else {
+                return false;
+            }
         } else {
             return false;
         }
@@ -221,27 +228,40 @@ public class Gameplay {
 //
 //        }
 
+        tableOfGame.get(numberOfSquare).set(numberOfField,symbolsOfPlayers.cross);
 
-        tableOfGame.get(numberOfSquare).set(numberOfField, whoPlays);
-        checkIfSquareIsWon(numberOfSquare);
         setLastlyPlayedField(numberOfField);
-        if (whoIsSquareWonBy.get(numberOfSquare) != symbolsOfPlayers.empty) {
-            System.out.println(whoIsSquareWonBy.get(numberOfSquare) + " won the square " + numberOfSquare);
-            System.out.println("Congratulations!!!");
-            setLastlyPlayedField(9);
+
+
+//        if(sprawdzWygrana(numberOfField)){
+//            setLastlyPlayedField(9);
+//        }
+//        setLastlyPlayedField(numberOfField);
+//        if (whoIsSquareWonBy.get(numberOfSquare) != symbolsOfPlayers.empty) {
+//            System.out.println(whoIsSquareWonBy.get(numberOfSquare) + " won the square " + numberOfSquare);
+//            System.out.println("Congratulations!!!");
+//            setLastlyPlayedField(9);
+//        }
+//
+        if(checkIfSquareIsWon(numberOfSquare,symbolsOfPlayers.cross)){
+            whoIsSquareWonBy.set(numberOfSquare,symbolsOfPlayers.cross);
         }
-        checkIfSquareIsFull(numberOfSquare);
+//        if(sprawdzWygrana(numberOfField)||sprawdzPelnosc(numberOfField)){
+//            setLastlyPlayedField(9);
+//        }
+//        else
+//        {setLastlyPlayedField(numberOfField);}
         if (checkIfTableIsWon() != symbolsOfPlayers.empty) {
             System.out.println(checkIfTableIsWon() + " is the winner!!!");
             System.out.println("Congratulations!!!");
-            return;
+
         }
 
-        if (whoPlays == symbolsOfPlayers.cross) {
-            whoPlays = symbolsOfPlayers.circle;
-        } else {
-            whoPlays = symbolsOfPlayers.cross;
-        }
+//        if (whoPlays == symbolsOfPlayers.cross) {
+//            whoPlays = symbolsOfPlayers.circle;
+//        } else {
+//            whoPlays = symbolsOfPlayers.cross;
+//        }
 
 
 
@@ -249,23 +269,40 @@ public class Gameplay {
 
     //    this method will check if move made is a winning one
 //    is to be used before changing whoPlays to the opponent
-    public void checkIfSquareIsWon(int numberOfSquare) {
+    public boolean checkIfSquareIsWon(int numberOfSquare,symbolsOfPlayers gracz) {
 
         for (int i = 0; i < winningASquarePossibilities.size(); i++) {
             int numberOfMetPoints = 0;
             for (int j = 0; j < 9; j++) {
-                if (winningASquarePossibilities.get(i).get(j) == symbolsForWinningPossibilities.player & tableOfGame.get(numberOfSquare).get(j) == whoPlays) {
+                if (winningASquarePossibilities.get(i).get(j) == symbolsForWinningPossibilities.player & tableOfGame.get(numberOfSquare).get(j) == gracz) {
                     numberOfMetPoints++;
                     if (numberOfMetPoints == 3) {
-                        whoIsSquareWonBy.set(numberOfSquare, whoPlays);
-                        return;
+                        return true;
+
                     }
                 }
             }
         }
+        return false;
+    }
+    public boolean sprawdzWygrana(int numberOfSquare) {
 
+        if (whoIsSquareWonBy.get(numberOfSquare) != symbolsOfPlayers.empty) {
+           return true;
+        }
+        return false;
     }
 
+    public boolean sprawdzPelnosc(int numberOfSquare) {
+
+        for (int i = 0; i < 9; i++) {
+
+            if (tableOfGame.get(numberOfSquare).get(i) == symbolsOfPlayers.empty) {
+                return false;
+            }
+        }
+        return true;
+    }
     public void checkIfSquareIsFull(int numberOfSquare) {
         int numberOfFullFields = 0;
         for (int i = 0; i < 9; i++) {
